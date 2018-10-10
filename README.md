@@ -1,2 +1,5 @@
 # catcher
-Interceptor system for Scrutor's decorators.
+
+Is a simple interceptors system for .Net Standard based in Scrutor's decorators.
+
+More info coming soon!
