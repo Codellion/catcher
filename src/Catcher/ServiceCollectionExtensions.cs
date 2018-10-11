@@ -56,7 +56,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services">ServiceCollecion</param>
         /// <param name="predicate">Interface match</param>
         /// <returns>ServiceCollecion</returns>
-        public static IServiceCollection AddInterceptorToServiceTypes<IN>(this IServiceCollection services, 
+        public static IServiceCollection AddInterceptor<IN>(this IServiceCollection services, 
             Func<ServiceDescriptor, bool> predicate)
             where IN : IInterceptor
         {

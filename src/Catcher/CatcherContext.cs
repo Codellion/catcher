@@ -21,6 +21,11 @@ namespace Catcher
         public MethodBase Method { get; internal set; }
 
         /// <summary>
+        /// Value returned by the method call
+        /// </summary>
+        public object ReturnValue { get; set; }
+
+        /// <summary>
         /// Indicate if the interceptor must cancel the method execution
         /// </summary>
         public bool Cancel { get; set; }

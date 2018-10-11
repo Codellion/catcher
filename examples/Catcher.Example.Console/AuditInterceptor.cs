@@ -1,0 +1,24 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Reflection;
+using System.Text;
+using Catcher;
+
+namespace Catcher.Example.Console
+{
+    public class AuditInterceptor : IInterceptor
+    {
+        private DateTime startTime;
+
+        public void PreIntercept(CatcherContext context)
+        {
+            startTime = DateTime.Now;
+        }
+
+        public void PostIntercept(CatcherContext context)
+        {
+            System.Console.WriteLine(DateTime.Now - startTime);
+        }
+    }
+}

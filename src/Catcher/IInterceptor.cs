@@ -19,6 +19,7 @@ namespace Catcher
         /// <summary>
         /// It is executed after the method call
         /// </summary>
-        void PostIntercept();
+        /// <param name="context">Interception context</param>
+        void PostIntercept(CatcherContext context);
     }
 }
