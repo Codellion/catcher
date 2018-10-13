@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Catcher\Catcher.Core.csproj" />
+    <ProjectReference Include="..\..\src\Catcher.Core\Catcher.Core.csproj" />
   </ItemGroup>
 
 </Project>

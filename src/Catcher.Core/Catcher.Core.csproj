@@ -6,12 +6,20 @@
     <Company>Codellion</Company>
     <Description>Is a simple interceptors system for .Net Standard based in Scrutor's decorators.</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.0.0</Version>
+    <Version>1.0.2</Version>
     <AssemblyName>Catcher.Core</AssemblyName>
     <RootNamespace>Catcher.Core</RootNamespace>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>signing.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/Codellion/catcher/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/Codellion/catcher</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/codellion/catcher/master/icon.png</PackageIconUrl>
+    <RepositoryUrl>https://github.com/Codellion/catcher</RepositoryUrl>
+    <Copyright>Copyright © 2018 Codellion</Copyright>
+    <RepositoryType>Git</RepositoryType>
+    <PackageTags>Interceptor;IoC;Scrutor;Dependency Injection</PackageTags>
+    <NeutralLanguage />
   </PropertyGroup>
 
   <ItemGroup>
