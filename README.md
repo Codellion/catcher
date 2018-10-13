@@ -25,7 +25,7 @@ dotnet add package Catcher.Core
 
 The library adds a extension method to `IServiceCollection`:
 
-* `AddInterceptor` - It adds an interceptor class to the implementation of a interface and It allow handle the pre and post execution.
+* `AddInterceptor` - It adds an interceptor class to the implementation of an interface and allows to handle the previous and subsequent execution.
 
 See **Examples** below for usage examples.
 
