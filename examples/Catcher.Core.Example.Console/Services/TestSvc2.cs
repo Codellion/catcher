@@ -2,21 +2,20 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Catcher.Example.Console.Services
+namespace Catcher.Core.Example.Console.Services
 {
-    public class TestSvc : ITestSvc
+    public class TestSvc2 : ITestSvc2
     {
-        public String Test1(int a, int b)
+        public void Test3(int a, int b)
         {
             for(var i = a; i < b; i++)
             {
                 System.Console.WriteLine("Principal test 1");
             }
 
-            return "a";
         }
 
-        public void Test2()
+        public void Test4()
         {
             System.Console.WriteLine("Principal test 2");
         }

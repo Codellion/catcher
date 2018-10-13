@@ -5,7 +5,7 @@ using System.Text;
 using System.Reflection.Emit;
 using System.Reflection;
 using System.Linq;
-using Catcher;
+using Catcher.Core;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

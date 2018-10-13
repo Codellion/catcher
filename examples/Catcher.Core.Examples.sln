@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2003
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catcher.Example.Console", "Catcher.Example.Console\Catcher.Example.Console.csproj", "{99C301BF-6151-4D9E-9F9A-3151BDB0C35B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catcher.Core.Example.Console", "Catcher.Core.Example.Console\Catcher.Core.Example.Console.csproj", "{99C301BF-6151-4D9E-9F9A-3151BDB0C35B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catcher", "..\src\Catcher\Catcher.csproj", "{A28CA01C-E134-428C-A6D8-AB98132E2C43}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catcher.Core", "..\src\Catcher.Core\Catcher.Core.csproj", "{A28CA01C-E134-428C-A6D8-AB98132E2C43}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

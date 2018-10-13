@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 
-namespace Catcher
+namespace Catcher.Core
 {
     /// <summary>
     /// Base class of proxy services

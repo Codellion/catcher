@@ -3,7 +3,7 @@ using System.Reflection.Emit;
 using System.Reflection;
 using System.Linq;
 
-namespace Catcher
+namespace Catcher.Core
 {
     internal static class ProxyFactory
     {

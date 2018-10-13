@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 
-namespace Catcher
+namespace Catcher.Core
 {
     /// <summary>
     /// Interceptor interface

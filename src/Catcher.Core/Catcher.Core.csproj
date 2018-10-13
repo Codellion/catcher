@@ -7,6 +7,11 @@
     <Description>Is a simple interceptors system for .Net Standard based in Scrutor's decorators.</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Version>1.0.0</Version>
+    <AssemblyName>Catcher.Core</AssemblyName>
+    <RootNamespace>Catcher.Core</RootNamespace>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>signing.snk</AssemblyOriginatorKeyFile>
+    <DelaySign>false</DelaySign>
   </PropertyGroup>
 
   <ItemGroup>

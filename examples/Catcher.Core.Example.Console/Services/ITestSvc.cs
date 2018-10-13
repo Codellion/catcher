@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Catcher.Example.Console.Services
+namespace Catcher.Core.Example.Console.Services
 {
     public interface ITestSvc : IAuditable
     {

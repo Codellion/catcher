@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Text;
-using Catcher;
+using Catcher.Core;
 
-namespace Catcher.Example.Console
+namespace Catcher.Core.Example.Console
 {
     public class AuditInterceptor : IInterceptor
     {
