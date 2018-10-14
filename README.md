@@ -27,30 +27,68 @@ The library adds a extension method to `IServiceCollection`:
 
 * `AddInterceptor` - It adds an interceptor class to the implementation of an interface and allows to handle the previous and subsequent execution.
 
+The interceptors must implement the `IInterceptor` interface:
+
+```csharp
+  /// <summary>
+  /// It is executed before the method call
+  /// </summary>
+  /// <param name="context">Interception context</param>
+  void PreIntercept(CatcherContext context);
+
+  /// <summary>
+  /// It is executed after the method call
+  /// </summary>
+  /// <param name="context">Interception context</param>
+  void PostIntercept(CatcherContext context);
+```
+
+The `CatcherContext` provides the method info and args in the previous execution and returned value in the final stage. It's possible cancel the execution from the `PreIntercept` method setting the **Cancel** property to `True` in the CatcherContext. Both the input arguments and the returned value can be modified before being used outside the interceptor.
+
 See **Examples** below for usage examples.
 
 ## Examples
 
+### Registration
+
 ```csharp
-var svcProv = new ServiceCollection()
-  //.AddTransient<AuditInterceptor>()
-  .Scan(scan => scan
-      .FromAssemblyOf<Program>()
-      .AddClasses(classes => classes.AssignableTo<IInterceptor>())
-      .AsSelf()
-      .WithTransientLifetime())
-  //.AddSingleton<ITestSvc, TestSvc>()
-  //.AddSingleton<ITestSvc2, TestSvc2>()
-  .Scan(scan => scan
-      .FromAssemblyOf<Program>()
-      .AddClasses(classes => classes.InNamespaceOf<ITestSvc>())
-      .AsImplementedInterfaces()
-      .WithSingletonLifetime())                
-  //.AddInterceptor<AuditInterceptor, ITestSvc>()
-  //.AddInterceptor<AuditInterceptor, ITestSvc2>()
-  //.AddInterceptor<AuditInterceptor>(n => n.ServiceType.Name.EndsWith("Svc"))
-  .AddInterceptor<AuditInterceptor>(n => typeof(IAuditable).IsAssignableFrom(n.ImplementationType))
-  .BuildServiceProvider();
+  var svcProv = new ServiceCollection()
+    //.AddTransient<AuditInterceptor>()
+    .Scan(scan => scan
+        .FromAssemblyOf<Program>()
+        .AddClasses(classes => classes.AssignableTo<IInterceptor>())
+        .AsSelf()
+        .WithTransientLifetime())
+    //.AddSingleton<ITestSvc, TestSvc>()
+    //.AddSingleton<ITestSvc2, TestSvc2>()
+    .Scan(scan => scan
+        .FromAssemblyOf<Program>()
+        .AddClasses(classes => classes.InNamespaceOf<ITestSvc>())
+        .AsImplementedInterfaces()
+        .WithSingletonLifetime())                
+    //.AddInterceptor<AuditInterceptor, ITestSvc>()
+    //.AddInterceptor<AuditInterceptor, ITestSvc2>()
+    //.AddInterceptor<AuditInterceptor>(n => n.ServiceType.Name.EndsWith("Svc"))
+    .AddInterceptor<AuditInterceptor>(n => typeof(IAuditable).IsAssignableFrom(n.ImplementationType))
+    .BuildServiceProvider();
+```
+
+### Interceptor
+```csharp
+  public class AuditInterceptor : IInterceptor
+  {
+      private DateTime startTime;
+
+      public void PreIntercept(CatcherContext context)
+      {
+          startTime = DateTime.Now;
+      }
+
+      public void PostIntercept(CatcherContext context)
+      {
+          System.Console.WriteLine(DateTime.Now - startTime);
+      }
+  }
 ```
 
 Logo designed by from Flaticon.
