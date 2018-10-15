@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using Catcher.Core;
 
-namespace Catcher.Core.Example.Console
+namespace Catcher.Core.Example.Interceptor
 {
     public class AuditInterceptor : IInterceptor
     {

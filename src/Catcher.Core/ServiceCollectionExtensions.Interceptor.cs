@@ -9,7 +9,7 @@ using Catcher.Core;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class ServiceCollectionExtensions
+    public static partial class ServiceCollectionExtensions
     {
         /// <summary>
         /// Add a interceptor to the interface

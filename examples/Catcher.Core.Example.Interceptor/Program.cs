@@ -1,8 +1,8 @@
 ﻿using System;
-using Catcher.Core.Example.Console.Services;
+using Catcher.Core.Example.Interceptor.Services;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Catcher.Core.Example.Console
+namespace Catcher.Core.Example.Interceptor
 {
     internal class Program
     {
