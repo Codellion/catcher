@@ -68,6 +68,20 @@ namespace Catcher.Core
             // Return
             ctorGen.Emit(OpCodes.Ret);
 
+            CreateMethods(tb, interfaceType, originalImplType, interceptorType, innerFld, interFld);
+
+            return tb.CreateTypeInfo().AsType();
+        }
+
+        private static void CreateMethods(TypeBuilder tb, Type interfaceType, Type originalImplType, Type interceptorType,
+            FieldBuilder innerFld, FieldBuilder interFld)
+        {
+            // Search the base interfaces
+            interfaceType.GetInterfaces()
+                    .ToList()
+                    .ForEach(n =>
+                        CreateMethods(tb, n, originalImplType, interceptorType, innerFld, interFld));
+
             // Proxy methods creation
             foreach (var method in interfaceType.GetMethods())
             {
@@ -83,7 +97,6 @@ namespace Catcher.Core
                 // Then call the real method with the new args
                 // Finally return the interceptor return value
 
-                LocalBuilder retValue = null;
                 LocalBuilder argsVar = ilGen.DeclareLocal(objectArrType);
 
                 // Interceptor field is loaded for the first call
@@ -91,11 +104,6 @@ namespace Catcher.Core
                 ilGen.Emit(OpCodes.Ldfld, interFld);
 
                 var isVoidReturned = (oriMethod.ReturnType.Equals(voidType));
-                if (!isVoidReturned)
-                {
-                    retValue = ilGen.DeclareLocal(oriMethod.ReturnType);
-                }
-
                 var ctx = ilGen.DeclareLocal(catcherContextType);
 
                 // Array ctor
@@ -139,9 +147,15 @@ namespace Catcher.Core
                 Label noBlock = ilGen.DefineLabel();
                 ilGen.Emit(OpCodes.Brtrue, noBlock);
 
+                // For assign to Context.ReturnValue
+                if (!isVoidReturned)
+                {
+                    ilGen.Emit(OpCodes.Ldloc, ctx);
+                }
+
                 ilGen.Emit(OpCodes.Ldarg_0);
                 ilGen.Emit(OpCodes.Ldfld, innerFld);
-                
+
                 // Load the modified context args into the method call
 
                 ilGen.Emit(OpCodes.Ldloc, ctx);
@@ -171,16 +185,13 @@ namespace Catcher.Core
                     {
                         ilGen.Emit(OpCodes.Box, oriMethod.ReturnType);
                     }
-                    ilGen.Emit(OpCodes.Stloc, retValue);
-                    
-                    ilGen.Emit(OpCodes.Ldloc, ctx);
-                    ilGen.Emit(OpCodes.Ldloc, retValue);
-                    ilGen.Emit(OpCodes.Callvirt, catcherContextType.GetMethod($"set_{nameof(CatcherContext.ReturnValue)}"));
+
+                    ilGen.Emit(OpCodes.Call, catcherContextType.GetMethod($"set_{nameof(CatcherContext.ReturnValue)}"));
                 }
-                
+
                 ilGen.MarkLabel(noBlock);
 
-                // Call the pre method of interceptor with context
+                // Call the post method of interceptor with context
                 ilGen.Emit(OpCodes.Ldarg_0);
                 ilGen.Emit(OpCodes.Ldfld, interFld);
                 ilGen.Emit(OpCodes.Ldloc, ctx);
@@ -191,13 +202,15 @@ namespace Catcher.Core
                 {
                     ilGen.Emit(OpCodes.Ldloc, ctx);
                     ilGen.Emit(OpCodes.Callvirt, catcherContextType.GetMethod($"get_{nameof(CatcherContext.ReturnValue)}"));
+                    if (oriMethod.ReturnType.IsValueType)
+                    {
+                        ilGen.Emit(OpCodes.Unbox_Any, oriMethod.ReturnType);
+                    }
                 }
 
                 //return
                 ilGen.Emit(OpCodes.Ret);
             }
-
-            return tb.CreateTypeInfo().AsType();
         }
     }
 }

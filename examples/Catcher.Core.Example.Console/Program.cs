@@ -38,7 +38,7 @@ namespace Catcher.Core.Example.Console
             testSvc2.Test3(1, 1000);
             testSvc2.Test4();
 
-            System.Console.WriteLine("PULSE ENTER PARA FINALIZAR...");
+            System.Console.WriteLine("PULSE ENTER FOR EXIT...");
             System.Console.ReadLine();
         }
     }
