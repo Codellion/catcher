@@ -70,10 +70,10 @@ The interceptor registration must indicate it in the last place, after register 
         .AddClasses(classes => classes.InNamespaceOf<ITestSvc>())
         .AsImplementedInterfaces()
         .WithSingletonLifetime())                
+    .AddPropertyInjection<ITestSvc2>()
     //.AddInterceptor<AuditInterceptor, ITestSvc>()
     //.AddInterceptor<AuditInterceptor, ITestSvc2>()
-    //.AddInterceptor<AuditInterceptor>(n => n.ServiceType.Name.EndsWith("Svc"))
-    .AddPropertyInjection<ITestSvc2>()
+    //.AddInterceptor<AuditInterceptor>(n => n.ServiceType.Name.Contains("Svc"))
     .AddInterceptor<AuditInterceptor>(n => typeof(IAuditable).IsAssignableFrom(n.ImplementationType))
     .BuildServiceProvider();
 ```
