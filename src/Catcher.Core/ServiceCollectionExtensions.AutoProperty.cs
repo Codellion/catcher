@@ -11,9 +11,14 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static partial class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddPropertyInjection<I>(this IServiceCollection services)
+        /// <summary>
+        /// Add property injection to the interface
+        /// </summary>
+        /// <param name="services">ServiceCollecion</param>
+        /// <param name="interfaceType">Interface</param>
+        /// <returns>ServiceCollecion</returns>
+        public static IServiceCollection AddPropertyInjection(this IServiceCollection services, Type interfaceType)
         {
-            var interfaceType = typeof(I);
             var oriTypeDesc = services.FirstOrDefault(n => n.ServiceType.Equals(interfaceType));
 
             if (oriTypeDesc == null)
@@ -26,6 +31,38 @@ namespace Microsoft.Extensions.DependencyInjection
                 var proxyType = AutoPropertyProxyFactory.CreateProxy(interfaceType, oriTypeDesc.ImplementationType);
                 services = services.Decorate(interfaceType, proxyType);
             }
+
+            return services;
+        }
+
+        /// <summary>
+        /// Add property injection to the interface
+        /// </summary>
+        /// <typeparam name="I">Interface</typeparam>
+        /// <param name="services">ServiceCollecion</param>
+        /// <returns>ServiceCollecion</returns>
+        public static IServiceCollection AddPropertyInjection<I>(this IServiceCollection services)
+        {
+            var interfaceType = typeof(I);
+            return AddPropertyInjection(services, interfaceType);
+        }
+
+        /// <summary>
+        /// Add property injection to the interface
+        /// </summary>
+        /// <param name="services">ServiceCollecion</param>
+        /// <param name="predicate">Interface match</param>
+        /// <returns>ServiceCollecion</returns>
+        public static IServiceCollection AddPropertyInjection(this IServiceCollection services,
+            Func<ServiceDescriptor, bool> predicate)
+        {
+            var selTypes = services.Where(predicate);
+
+            selTypes.ToList()
+                .ForEach(selType =>
+                {
+                    services = AddPropertyInjection(services, selType.ServiceType);
+                });
 
             return services;
         }

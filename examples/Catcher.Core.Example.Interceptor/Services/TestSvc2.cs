@@ -6,18 +6,16 @@ namespace Catcher.Core.Example.Interceptor.Services
 {
     public class TestSvc2 : ITestSvc2
     {
+        public ITestSvc TestSvc { get; set;}
+
         public void Test3(int a, int b)
         {
-            for(var i = a; i < b; i++)
-            {
-                System.Console.WriteLine("Principal test 1");
-            }
-
+            TestSvc.Test1(a, b);
         }
 
         public void Test4()
         {
-            System.Console.WriteLine("Principal test 2");
+            TestSvc.Test2();
         }
     }
 }

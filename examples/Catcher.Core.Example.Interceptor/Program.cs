@@ -23,10 +23,11 @@ namespace Catcher.Core.Example.Interceptor
                     .FromAssemblyOf<Program>()
                     .AddClasses(classes => classes.InNamespaceOf<ITestSvc>())
                     .AsImplementedInterfaces()
-                    .WithSingletonLifetime())                
+                    .WithSingletonLifetime())
                 //.AddInterceptor<AuditInterceptor, ITestSvc>()
                 //.AddInterceptor<AuditInterceptor, ITestSvc2>()
                 //.AddInterceptor<AuditInterceptor>(n => n.ServiceType.Name.EndsWith("Svc"))
+                .AddPropertyInjection<ITestSvc2>()
                 .AddInterceptor<AuditInterceptor>(n => typeof(IAuditable).IsAssignableFrom(n.ImplementationType))
                 .BuildServiceProvider();
             
