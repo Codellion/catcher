@@ -3,7 +3,7 @@
   <img src="https://raw.githubusercontent.com/codellion/catcher/master/logo.png" width="300">  
 </p>
 
-Is a simple interceptors system for .Net Standard 2.0 based in decorators of [Scrutor](https://github.com/khellang/Scrutor). It also adds a series of characteristics not implemented in the DI container as property injection.
+Is a simple interceptors system for .Net Standard 2.0 based in decorators of [Scrutor](https://github.com/khellang/Scrutor). It also adds a series of features not implemented in the DI container as property injection.
 
 ## Installation
 
