@@ -51,6 +51,8 @@ See **Examples** below for usage examples.
 
 ### Registration
 
+The interceptor registration must indicate it in the last place, after register the services.
+
 ```csharp
   var svcProv = new ServiceCollection()
     //.AddTransient<AuditInterceptor>()
