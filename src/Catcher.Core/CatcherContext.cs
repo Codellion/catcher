@@ -30,11 +30,23 @@ namespace Catcher.Core
         /// </summary>
         public bool Cancel { get; set; }
 
-        public CatcherContext(object[] args, MethodBase method)
+        /// <summary>
+        /// Instance on which the call is executed.
+        /// </summary>
+        public object Target { get; set; }
+
+        /// <summary>
+        /// Target type
+        /// </summary>
+        public Type TargetType { get; set; }
+
+        public CatcherContext(object[] args, MethodBase method, object target, string targetTypeName)
         {
-            this.Args = args;
-            this.Method = method;
-            this.Cancel = false;
+            Args = args;
+            Method = method;
+            Cancel = false;
+            Target = target;
+            TargetType = Type.GetType(targetTypeName);
         }
     }
 }

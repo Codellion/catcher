@@ -14,6 +14,7 @@ namespace Catcher.Core
         static Type catcherContextType = typeof(CatcherContext);
         static Type baseProxyType = typeof(BaseProxy);
         static Type voidType = typeof(void);
+        static Type stringType = typeof(string);
 
         internal static Type CreateProxy(Type interceptorType, Type interfaceType, Type originalImplType)
         {
@@ -128,9 +129,14 @@ namespace Catcher.Core
                 ilGen.Emit(OpCodes.Ldarg_0);
                 ilGen.Emit(OpCodes.Callvirt, baseProxyType.GetMethod(nameof(BaseProxy.GetMethod)));
 
+                ilGen.Emit(OpCodes.Ldarg_0);
+                ilGen.Emit(OpCodes.Ldfld, innerFld);
+
+                ilGen.Emit(OpCodes.Ldstr, originalImplType.AssemblyQualifiedName);
+
                 // Create context with args and method
                 ilGen.Emit(OpCodes.Newobj, catcherContextType
-                    .GetConstructor(new Type[] { objectArrType, methodBaseType }));
+                    .GetConstructor(new Type[] { objectArrType, methodBaseType, originalImplType, stringType }));
 
                 // Save into the local var
                 ilGen.Emit(OpCodes.Stloc, ctx);
