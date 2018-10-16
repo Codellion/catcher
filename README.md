@@ -3,7 +3,7 @@
   <img src="https://raw.githubusercontent.com/codellion/catcher/master/logo.png" width="300">  
 </p>
 
-Is a simple interceptors system for .Net Standard 2.0 based in decorators of [Scrutor](https://github.com/khellang/Scrutor).
+Is a simple interceptors system for .Net Standard 2.0 based in decorators of [Scrutor](https://github.com/khellang/Scrutor). It also adds a series of characteristics not implemented in the DI container as property injection.
 
 ## Installation
 
@@ -27,7 +27,7 @@ The library adds a extension method to `IServiceCollection`:
 
 * `AddInterceptor` - It adds an interceptor class to the implementation of an interface and allows to handle the previous and subsequent execution.
 
-The interceptors must implement the `IInterceptor` interface:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The interceptors must implement the `IInterceptor` interface:
 
 ```csharp
   /// <summary>
@@ -43,7 +43,9 @@ The interceptors must implement the `IInterceptor` interface:
   void PostIntercept(CatcherContext context);
 ```
 
-The `CatcherContext` provides the method info and args in the previous execution and returned value in the final stage. It's possible cancel the execution from the `PreIntercept` method setting the **Cancel** property to `True` in the CatcherContext. Both the input arguments and the returned value can be modified before being used outside the interceptor.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The `CatcherContext` provides the method info and args in the previous execution and returned value in the final stage. It's possible cancel the execution from the `PreIntercept` method setting the **Cancel** property to `True` in the CatcherContext. Both the input arguments and the returned value can be modified before being used outside the interceptor.
+
+* `AddPropertyInjection` - It allows the IoC to inject dependencies through properties instead the class constructor.
 
 See **Examples** below for usage examples.
 
@@ -51,7 +53,7 @@ See **Examples** below for usage examples.
 
 ### Registration
 
-The interceptor registration must indicate it in the last place, after register the services.
+The interceptor registration must indicate it in the last place, after register the services. While the register of property injection must be made between the register of services and the register of interceptors.
 
 ```csharp
   var svcProv = new ServiceCollection()
@@ -71,6 +73,7 @@ The interceptor registration must indicate it in the last place, after register 
     //.AddInterceptor<AuditInterceptor, ITestSvc>()
     //.AddInterceptor<AuditInterceptor, ITestSvc2>()
     //.AddInterceptor<AuditInterceptor>(n => n.ServiceType.Name.EndsWith("Svc"))
+    .AddPropertyInjection<ITestSvc2>()
     .AddInterceptor<AuditInterceptor>(n => typeof(IAuditable).IsAssignableFrom(n.ImplementationType))
     .BuildServiceProvider();
 ```
@@ -89,6 +92,25 @@ The interceptor registration must indicate it in the last place, after register 
       public void PostIntercept(CatcherContext context)
       {
           System.Console.WriteLine(DateTime.Now - startTime);
+      }
+  }
+```
+
+### Service with property injection
+
+```csharp
+  public class TestSvc2 : ITestSvc2
+  {
+      public ITestSvc TestSvc { get; set;}
+
+      public void Test3(int a, int b)
+      {
+          TestSvc.Test1(a, b);
+      }
+
+      public void Test4()
+      {
+          TestSvc.Test2();
       }
   }
 ```
