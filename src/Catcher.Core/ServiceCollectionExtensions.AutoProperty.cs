@@ -23,7 +23,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             if (oriTypeDesc.ImplementationType != null)
             {
-                var proxyType = ProxyFactory2.CreateProxy(interfaceType, oriTypeDesc.ImplementationType);
+                var proxyType = AutoPropertyProxyFactory.CreateProxy(interfaceType, oriTypeDesc.ImplementationType);
                 services = services.Decorate(interfaceType, proxyType);
             }
 

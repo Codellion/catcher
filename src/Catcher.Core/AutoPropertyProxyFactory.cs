@@ -5,16 +5,13 @@ using System.Linq;
 
 namespace Catcher.Core
 {
-    internal static class ProxyFactory2
+    internal static class AutoPropertyProxyFactory
     {
-        static Type iInterceptorType = typeof(IInterceptor);
-        static Type objectType = typeof(object);
-        static Type objectArrType = typeof(object[]);
-        static Type methodBaseType = typeof(MethodBase);
-        static Type catcherContextType = typeof(CatcherContext);
         static Type baseProxyType = typeof(BaseProxy);
         static Type voidType = typeof(void);
         static Type serviceProvType = typeof(IServiceProvider);
+        static Type stringType = typeof(string);
+        static Type typeType = typeof(Type);
 
         internal static Type CreateProxy(Type interfaceType, Type originalImplType)
         {
@@ -32,7 +29,7 @@ namespace Catcher.Core
             var an = new AssemblyName(Guid.NewGuid().ToString());
             AssemblyBuilder asmBuilder = AssemblyBuilder.DefineDynamicAssembly(an, AssemblyBuilderAccess.Run);
             ModuleBuilder mdBuilder = asmBuilder.DefineDynamicModule("ProxyModule");
-            TypeBuilder tb = mdBuilder.DefineType($"Proxy{originalImplType.Name}", originalImplType.Attributes);
+            TypeBuilder tb = mdBuilder.DefineType($"AutoPropertyProxy{originalImplType.Name}", originalImplType.Attributes);
 
             // Interface implementation is added
             tb.AddInterfaceImplementation(interfaceType);
@@ -58,6 +55,7 @@ namespace Catcher.Core
             // Write the last evalutaion in a field - inner = InterfaceImpl
             ctorGen.Emit(OpCodes.Stfld, innerFld);
 
+            // For each property get the implemented service from ServiceProvider
             innerInjectionTypes.ForEach(prop =>
             {
                 ctorGen.Emit(OpCodes.Ldarg_1);
@@ -71,7 +69,7 @@ namespace Catcher.Core
                 ctorGen.Emit(OpCodes.Ldarg_2);
 
                 ctorGen.Emit(OpCodes.Ldstr, prop.PropertyType.AssemblyQualifiedName);
-                ctorGen.Emit(OpCodes.Call, typeof(Type).GetMethod(nameof(Type.GetType), new[] { typeof(string) }));
+                ctorGen.Emit(OpCodes.Call, typeType.GetMethod(nameof(Type.GetType), new[] { stringType }));
 
                 ctorGen.Emit(OpCodes.Callvirt, serviceProvType.GetMethod(nameof(IServiceProvider.GetService)));
 
@@ -107,10 +105,6 @@ namespace Catcher.Core
                 var ilGen = tb.DefineMethod(method.Name, oriMethod.Attributes,
                     oriMethod.ReturnType, typeParams)
                     .GetILGenerator();
-
-                // The idea is call the interceptor
-                // Then call the real method with the new args
-                // Finally return the interceptor return value
 
                 var isVoidReturned = (oriMethod.ReturnType.Equals(voidType));
 

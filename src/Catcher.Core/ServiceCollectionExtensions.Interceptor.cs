@@ -29,7 +29,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             if(oriTypeDesc.ImplementationType != null)
             {
-                var proxyType = ProxyFactory.CreateProxy(interceptorType, interfaceType, oriTypeDesc.ImplementationType);
+                var proxyType = InterceptorProxyFactory.CreateProxy(interceptorType, interfaceType, oriTypeDesc.ImplementationType);
                 services = services.Decorate(interfaceType, proxyType);
             }
 

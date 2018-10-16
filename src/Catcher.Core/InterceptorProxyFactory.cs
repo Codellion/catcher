@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Catcher.Core
 {
-    internal static class ProxyFactory
+    internal static class InterceptorProxyFactory
     {
         static Type iInterceptorType = typeof(IInterceptor);
         static Type objectType = typeof(object);
@@ -37,7 +37,7 @@ namespace Catcher.Core
             var an = new AssemblyName(Guid.NewGuid().ToString());
             AssemblyBuilder asmBuilder = AssemblyBuilder.DefineDynamicAssembly(an, AssemblyBuilderAccess.Run);
             ModuleBuilder mdBuilder = asmBuilder.DefineDynamicModule("ProxyModule");
-            TypeBuilder tb = mdBuilder.DefineType($"Proxy{originalImplType.Name}", originalImplType.Attributes);
+            TypeBuilder tb = mdBuilder.DefineType($"InterceptorProxy{originalImplType.Name}", originalImplType.Attributes);
 
             // Interface implementation is added
             tb.AddInterfaceImplementation(interfaceType);
