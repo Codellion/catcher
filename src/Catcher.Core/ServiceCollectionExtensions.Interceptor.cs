@@ -21,16 +21,30 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddInterceptor(this IServiceCollection services, Type interceptorType, Type interfaceType)
         {
             var oriTypeDesc = services.FirstOrDefault(n => n.ServiceType.Equals(interfaceType));
+            Type impType = null;
+            Type oriType = null;
 
             if (oriTypeDesc == null)
             {
                 throw new ArgumentException("I must be implemented by a class");
             }
 
-            if(oriTypeDesc.ImplementationType != null)
+            if (currentImplementations.ContainsKey(interfaceType))
             {
-                var proxyType = InterceptorProxyFactory.CreateProxy(interceptorType, interfaceType, oriTypeDesc.ImplementationType);
+                impType = currentImplementations[interfaceType].CurrentType;
+                oriType = currentImplementations[interfaceType].Originalype;
+            }
+            else if (oriTypeDesc.ImplementationType != null)
+            {
+                impType = oriTypeDesc.ImplementationType;
+                oriType = oriTypeDesc.ImplementationType;
+            }
+
+            if (impType != null)
+            {
+                var proxyType = InterceptorProxyFactory.CreateProxy(interceptorType, interfaceType, impType, oriType);
                 services = services.Decorate(interfaceType, proxyType);
+                currentImplementations[interfaceType] = new ImplementationProxyClass(proxyType, oriType);
             }
 
             return services;

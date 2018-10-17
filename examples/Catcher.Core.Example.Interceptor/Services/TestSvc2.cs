@@ -17,5 +17,10 @@ namespace Catcher.Core.Example.Interceptor.Services
         {
             TestSvc.Test2();
         }
+
+        public List<string> Test5()
+        {
+            return new List<string> { "1", "2" };
+        }
     }
 }

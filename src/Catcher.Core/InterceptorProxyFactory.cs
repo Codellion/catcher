@@ -17,16 +17,16 @@ namespace Catcher.Core
         static Type stringType = typeof(string);
         static Type typeType = typeof(Type);
 
-        internal static Type CreateProxy(Type interceptorType, Type interfaceType, Type originalImplType)
+        internal static Type CreateProxy(Type interceptorType, Type interfaceType, Type implType, Type originalType)
         {
             if (!interfaceType.IsInterface)
             {
                 throw new ArgumentException($"{interfaceType.Name} must be an Interface.");
             }
 
-            if (!interfaceType.IsAssignableFrom(originalImplType))
+            if (!interfaceType.IsAssignableFrom(implType))
             {
-                throw new ArgumentException($"{originalImplType.Name} must implement {interfaceType.Name}.");
+                throw new ArgumentException($"{implType.Name} must implement {interfaceType.Name}.");
             }
 
             if (!iInterceptorType.IsAssignableFrom(interceptorType))
@@ -38,7 +38,7 @@ namespace Catcher.Core
             var an = new AssemblyName(Guid.NewGuid().ToString());
             AssemblyBuilder asmBuilder = AssemblyBuilder.DefineDynamicAssembly(an, AssemblyBuilderAccess.Run);
             ModuleBuilder mdBuilder = asmBuilder.DefineDynamicModule("ProxyModule");
-            TypeBuilder tb = mdBuilder.DefineType($"InterceptorProxy{originalImplType.Name}", originalImplType.Attributes);
+            TypeBuilder tb = mdBuilder.DefineType($"{interceptorType.Name}Proxy_{implType.Name}", implType.Attributes);
 
             // Interface implementation is added
             tb.AddInterfaceImplementation(interfaceType);
@@ -70,33 +70,33 @@ namespace Catcher.Core
 
             ctorGen.Emit(OpCodes.Ldarg_0);
 
-            ctorGen.Emit(OpCodes.Ldstr, originalImplType.AssemblyQualifiedName);
+            ctorGen.Emit(OpCodes.Ldstr, originalType.AssemblyQualifiedName);
             ctorGen.Emit(OpCodes.Call, typeType.GetMethod(nameof(Type.GetType), new[] { stringType }));
 
-            ctorGen.Emit(OpCodes.Call, baseProxyType.GetMethod($"set_{nameof(BaseProxy.TargetType)}"));
+            ctorGen.Emit(OpCodes.Call, baseProxyType.GetMethod($"set_{nameof(BaseProxy.OriginalTargetType)}"));
 
             // Return
             ctorGen.Emit(OpCodes.Ret);
 
-            CreateMethods(tb, interfaceType, originalImplType, interceptorType, innerFld, interFld);
+            CreateMethods(tb, interfaceType, implType, interceptorType, innerFld, interFld);
 
             return tb.CreateTypeInfo().AsType();
         }
 
-        private static void CreateMethods(TypeBuilder tb, Type interfaceType, Type originalImplType, Type interceptorType,
+        private static void CreateMethods(TypeBuilder tb, Type interfaceType, Type implType, Type interceptorType,
             FieldBuilder innerFld, FieldBuilder interFld)
         {
             // Search the base interfaces
             interfaceType.GetInterfaces()
                     .ToList()
                     .ForEach(n =>
-                        CreateMethods(tb, n, originalImplType, interceptorType, innerFld, interFld));
+                        CreateMethods(tb, n, implType, interceptorType, innerFld, interFld));
 
             // Proxy methods creation
             foreach (var method in interfaceType.GetMethods())
             {
                 // A new mirror method is created
-                var oriMethod = originalImplType.GetMethod(method.Name);
+                var oriMethod = implType.GetMethod(method.Name);
                 var typeParams = oriMethod.GetParameters().Select(n => n.ParameterType).ToArray();
 
                 var ilGen = tb.DefineMethod(method.Name, oriMethod.Attributes,
@@ -136,17 +136,19 @@ namespace Catcher.Core
                 // Create the interception context
                 // Get the call method info                
                 ilGen.Emit(OpCodes.Ldarg_0);
+                ilGen.Emit(OpCodes.Ldarg_0);
+                ilGen.Emit(OpCodes.Ldfld, innerFld);
                 ilGen.Emit(OpCodes.Callvirt, baseProxyType.GetMethod(nameof(BaseProxy.GetMethod)));
 
                 ilGen.Emit(OpCodes.Ldarg_0);
                 ilGen.Emit(OpCodes.Ldfld, innerFld);
 
                 ilGen.Emit(OpCodes.Ldarg_0);
-                ilGen.Emit(OpCodes.Callvirt, baseProxyType.GetMethod($"get_{nameof(BaseProxy.TargetType)}"));
+                ilGen.Emit(OpCodes.Callvirt, baseProxyType.GetMethod($"get_{nameof(BaseProxy.OriginalTargetType)}"));
 
                 // Create context with args and method
                 ilGen.Emit(OpCodes.Newobj, catcherContextType
-                    .GetConstructor(new Type[] { objectArrType, methodBaseType, originalImplType, typeType }));
+                    .GetConstructor(new Type[] { objectArrType, methodBaseType, implType, typeType }));
 
                 // Save into the local var
                 ilGen.Emit(OpCodes.Stloc, ctx);

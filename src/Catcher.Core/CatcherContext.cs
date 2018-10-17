@@ -36,7 +36,7 @@ namespace Catcher.Core
         public object Target { get; set; }
 
         /// <summary>
-        /// Target type
+        /// Original target type
         /// </summary>
         public Type TargetType { get; set; }
 

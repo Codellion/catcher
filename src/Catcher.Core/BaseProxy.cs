@@ -12,16 +12,18 @@ namespace Catcher.Core
     /// </summary>
     public class BaseProxy
     {
-        public Type TargetType { get; set; }
+        public Type OriginalTargetType { get; set; }
 
         /// <summary>
         /// Return the call method
         /// </summary>
         /// <returns></returns>
-        public MethodBase GetMethod()
+        public MethodBase GetMethod(object target)
         {
             var methodBase = new StackTrace(new StackFrame(1)).GetFrame(0).GetMethod();
-            return TargetType.GetMethod(methodBase.Name, methodBase.GetParameters().Select(n => n.ParameterType).ToArray());
+            var currentTargetType = target.GetType();
+
+            return currentTargetType.GetMethod(methodBase.Name, methodBase.GetParameters().Select(n => n.ParameterType).ToArray());
         }
     }
 }

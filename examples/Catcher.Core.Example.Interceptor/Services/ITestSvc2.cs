@@ -8,5 +8,6 @@ namespace Catcher.Core.Example.Interceptor.Services
     {
         void Test3(int a, int b);
         void Test4();
+        List<string> Test5();
     }
 }

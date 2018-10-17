@@ -37,10 +37,10 @@ namespace Catcher.Core.Example.Performance
                     Catheti2 = 5.5
                 });
 
-            System.Console.WriteLine($"Hypotenuse: {res}");
+            Console.WriteLine($"Hypotenuse: {res}");
 
-            System.Console.WriteLine("PULSE ENTER FOR EXIT...");
-            System.Console.ReadLine();
+            Console.WriteLine("PULSE ENTER FOR EXIT...");
+            Console.ReadLine();
         }
     }
 }

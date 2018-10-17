@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Catcher.Core
 {
-    internal static class AutoPropertyProxyFactory
+    internal static class PropertyInjectionProxyFactory
     {
         static Type baseProxyType = typeof(BaseProxy);
         static Type voidType = typeof(void);
@@ -29,7 +29,7 @@ namespace Catcher.Core
             var an = new AssemblyName(Guid.NewGuid().ToString());
             AssemblyBuilder asmBuilder = AssemblyBuilder.DefineDynamicAssembly(an, AssemblyBuilderAccess.Run);
             ModuleBuilder mdBuilder = asmBuilder.DefineDynamicModule("ProxyModule");
-            TypeBuilder tb = mdBuilder.DefineType($"AutoPropertyProxy{originalImplType.Name}", originalImplType.Attributes);
+            TypeBuilder tb = mdBuilder.DefineType($"PropertyInjectionProxy_{originalImplType.Name}", originalImplType.Attributes);
 
             // Interface implementation is added
             tb.AddInterfaceImplementation(interfaceType);

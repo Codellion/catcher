@@ -10,7 +10,7 @@ namespace Catcher.Core.Example.Interceptor.Services
         {
             for(var i = a; i < b; i++)
             {
-                System.Console.WriteLine("Principal test 1");
+                Console.WriteLine("Principal test 1");
             }
 
             return "a";
@@ -18,7 +18,7 @@ namespace Catcher.Core.Example.Interceptor.Services
 
         public void Test2()
         {
-            System.Console.WriteLine("Principal test 2");
+            Console.WriteLine("Principal test 2");
         }
     }
 }
