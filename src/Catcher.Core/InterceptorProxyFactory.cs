@@ -15,6 +15,7 @@ namespace Catcher.Core
         static Type baseProxyType = typeof(BaseProxy);
         static Type voidType = typeof(void);
         static Type stringType = typeof(string);
+        static Type typeType = typeof(Type);
 
         internal static Type CreateProxy(Type interceptorType, Type interfaceType, Type originalImplType)
         {
@@ -66,6 +67,14 @@ namespace Catcher.Core
             ctorGen.Emit(OpCodes.Ldarg_2);
             // Write the last evalutaion in a field - intercept = Interceptor
             ctorGen.Emit(OpCodes.Stfld, interFld);
+
+            ctorGen.Emit(OpCodes.Ldarg_0);
+
+            ctorGen.Emit(OpCodes.Ldstr, originalImplType.AssemblyQualifiedName);
+            ctorGen.Emit(OpCodes.Call, typeType.GetMethod(nameof(Type.GetType), new[] { stringType }));
+
+            ctorGen.Emit(OpCodes.Call, baseProxyType.GetMethod($"set_{nameof(BaseProxy.TargetType)}"));
+
             // Return
             ctorGen.Emit(OpCodes.Ret);
 
@@ -125,18 +134,19 @@ namespace Catcher.Core
                 }
 
                 // Create the interception context
-                // Get the call method info
+                // Get the call method info                
                 ilGen.Emit(OpCodes.Ldarg_0);
                 ilGen.Emit(OpCodes.Callvirt, baseProxyType.GetMethod(nameof(BaseProxy.GetMethod)));
 
                 ilGen.Emit(OpCodes.Ldarg_0);
                 ilGen.Emit(OpCodes.Ldfld, innerFld);
 
-                ilGen.Emit(OpCodes.Ldstr, originalImplType.AssemblyQualifiedName);
+                ilGen.Emit(OpCodes.Ldarg_0);
+                ilGen.Emit(OpCodes.Callvirt, baseProxyType.GetMethod($"get_{nameof(BaseProxy.TargetType)}"));
 
                 // Create context with args and method
                 ilGen.Emit(OpCodes.Newobj, catcherContextType
-                    .GetConstructor(new Type[] { objectArrType, methodBaseType, originalImplType, stringType }));
+                    .GetConstructor(new Type[] { objectArrType, methodBaseType, originalImplType, typeType }));
 
                 // Save into the local var
                 ilGen.Emit(OpCodes.Stloc, ctx);

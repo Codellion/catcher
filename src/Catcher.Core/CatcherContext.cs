@@ -40,13 +40,13 @@ namespace Catcher.Core
         /// </summary>
         public Type TargetType { get; set; }
 
-        public CatcherContext(object[] args, MethodBase method, object target, string targetTypeName)
+        public CatcherContext(object[] args, MethodBase method, object target, Type targetType)
         {
             Args = args;
             Method = method;
             Cancel = false;
             Target = target;
-            TargetType = Type.GetType(targetTypeName);
+            TargetType = targetType;
         }
     }
 }

@@ -1,4 +1,4 @@
-[![NuGet](https://img.shields.io/nuget/v/Catcher.Core.svg)](https://www.nuget.org/packages/Catcher.Core)
+# Catcher.Core [![NuGet](https://img.shields.io/nuget/v/Catcher.Core.svg)](https://www.nuget.org/packages/Catcher.Core)
 <p align="center" markdown="1">
   <img src="https://raw.githubusercontent.com/codellion/catcher/master/logo.png" width="300">  
 </p>
@@ -79,40 +79,64 @@ The interceptor registration must indicate it in the last place, after register 
 ```
 
 ### Interceptor
+
 ```csharp
-  public class AuditInterceptor : IInterceptor
-  {
-      private DateTime startTime;
+    public class AuditInterceptor : IInterceptor
+    {
+        private DateTime startTime;
 
-      public void PreIntercept(CatcherContext context)
-      {
-          startTime = DateTime.Now;
-      }
+        public void PreIntercept(CatcherContext context)
+        {
+            startTime = DateTime.Now;
+        }
 
-      public void PostIntercept(CatcherContext context)
-      {
-          System.Console.WriteLine(DateTime.Now - startTime);
-      }
-  }
+        public void PostIntercept(CatcherContext context)
+        {
+            System.Console.WriteLine(DateTime.Now - startTime);
+        }
+    }
+```
+
+### Interceptor with inner execution of method
+
+```csharp
+    public class AuditInterceptor : IInterceptor
+    {
+        private DateTime startTime;
+
+        public void PreIntercept(CatcherContext context)
+        {
+            startTime = DateTime.Now;
+
+            context.ReturnValue = context.Method.Invoke(context.Target, context.Args);
+
+            context.Cancel = true;
+        }
+
+        public void PostIntercept(CatcherContext context)
+        {
+            System.Console.WriteLine(DateTime.Now - startTime);
+        }
+    }
 ```
 
 ### Service with property injection
 
 ```csharp
-  public class TestSvc2 : ITestSvc2
-  {
-      public ITestSvc TestSvc { get; set;}
+    public class TestSvc2 : ITestSvc2
+    {
+        public ITestSvc TestSvc { get; set;}
 
-      public void Test3(int a, int b)
-      {
-          TestSvc.Test1(a, b);
-      }
+        public void Test3(int a, int b)
+        {
+            TestSvc.Test1(a, b);
+        }
 
-      public void Test4()
-      {
-          TestSvc.Test2();
-      }
-  }
+        public void Test4()
+        {
+            TestSvc.Test2();
+        }
+    }
 ```
 
 Logo designed by from Flaticon.
