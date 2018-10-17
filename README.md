@@ -57,24 +57,18 @@ The interceptor registration must indicate it in the last place, after register 
 
 ```csharp
   var svcProv = new ServiceCollection()
-    //.AddTransient<AuditInterceptor>()
     .Scan(scan => scan
         .FromAssemblyOf<Program>()
         .AddClasses(classes => classes.AssignableTo<IInterceptor>())
         .AsSelf()
         .WithTransientLifetime())
-    //.AddSingleton<ITestSvc, TestSvc>()
-    //.AddSingleton<ITestSvc2, TestSvc2>()
     .Scan(scan => scan
         .FromAssemblyOf<Program>()
         .AddClasses(classes => classes.InNamespaceOf<ITestSvc>())
-        .AsImplementedInterfaces()
-        .WithSingletonLifetime())                
+        .AsMatchingInterface()
+        .WithSingletonLifetime())
     .AddPropertyInjection<ITestSvc2>()
-    //.AddInterceptor<AuditInterceptor, ITestSvc>()
-    //.AddInterceptor<AuditInterceptor, ITestSvc2>()
-    //.AddInterceptor<AuditInterceptor>(n => n.ServiceType.Name.Contains("Svc"))
-    .AddInterceptor<AuditInterceptor>(n => typeof(IAuditable).IsAssignableFrom(n.ImplementationType))
+    .AddInterceptor<AuditInterceptor>(n => typeof(IAuditable).IsAssignableFrom(n.ServiceType))
     .BuildServiceProvider();
 ```
 
