@@ -3,7 +3,7 @@ mono: none
 dotnet: 2.0.0
 
 install:
-- dotnet restore src\Catcher.Core.sln
+- dotnet restore src/Catcher.Core.sln
 
 script:
- - dotnet build src\Catcher.Core.sln
+ - dotnet build src/Catcher.Core.sln
