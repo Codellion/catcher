@@ -12,6 +12,7 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>signing.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
+    <PublicSign Condition="'$(OS)' != 'Windows_NT'">true</PublicSign>
     <PackageLicenseUrl>https://raw.githubusercontent.com/Codellion/catcher/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/Codellion/catcher</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/codellion/catcher/master/icon.png</PackageIconUrl>
