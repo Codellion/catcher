@@ -1,4 +1,4 @@
-# Catcher.Core [![NuGet](https://img.shields.io/nuget/v/Catcher.Core.svg)](https://www.nuget.org/packages/Catcher.Core)
+# Catcher.Core [![NuGet](https://img.shields.io/nuget/v/Catcher.Core.svg)](https://www.nuget.org/packages/Catcher.Core) [![TravisCI](https://travis-ci.org/Codellion/catcher.svg?branch=master)](https://travis-ci.org/Codellion/catcher)
 <p align="center" markdown="1">
   <img src="https://raw.githubusercontent.com/codellion/catcher/master/logo.png" width="300">  
 </p>
