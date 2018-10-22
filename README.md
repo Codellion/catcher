@@ -7,7 +7,7 @@ Is a simple interceptors system for .Net Standard 2.0 based in decorators of [Sc
 
 For to see of the version 1.0 documentation use this [link](https://github.com/Codellion/catcher/blob/1.1.2/README.md).
 
-The new version 2.0 is more powerful and fast, it's has a more simple interface (More similar to the other frameworks) and usage.
+The new version 2.0 is more powerful and fast, it's has a more simple interface (More similar to the anothers frameworks) and usage.
 
 ## Installation
 
