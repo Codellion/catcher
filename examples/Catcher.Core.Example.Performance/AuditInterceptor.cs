@@ -9,15 +9,12 @@ namespace Catcher.Core.Example.Performance
 {
     public class AuditInterceptor : IInterceptor
     {
-        private DateTime startTime;
-        
-        public void PreIntercept(CatcherContext context)
+        public void Intercept(CatcherContext context)
         {
-            startTime = DateTime.Now;
-        }
+            var startTime = DateTime.Now;
 
-        public void PostIntercept(CatcherContext context)
-        {
+            context.Proceed();
+
             if (!context.Method.Name.Equals(nameof(IAuditableCalcService.GetFibonacci)))
             {
                 System.Console.WriteLine($"{context.Method.Name} - {DateTime.Now - startTime}");

@@ -26,11 +26,6 @@ namespace Catcher.Core
         public object ReturnValue { get; set; }
 
         /// <summary>
-        /// Indicate if the interceptor must cancel the method execution
-        /// </summary>
-        public bool Cancel { get; set; }
-
-        /// <summary>
         /// Instance on which the call is executed.
         /// </summary>
         public object Target { get; set; }
@@ -40,13 +35,36 @@ namespace Catcher.Core
         /// </summary>
         public Type TargetType { get; set; }
 
-        public CatcherContext(object[] args, MethodBase method, object target, Type targetType)
+        private Queue<IInterceptor> interceptors;
+
+        public CatcherContext(object[] args, MethodBase method, object target)
         {
             Args = args;
             Method = method;
-            Cancel = false;
             Target = target;
-            TargetType = targetType;
+            TargetType = target.GetType();
+        }
+
+        internal void Init(Queue<IInterceptor> interceptors)
+        {
+            this.interceptors = interceptors;
+            Proceed();
+        }
+
+        /// <summary>
+        /// Execute the intercepted method with the args of the context
+        /// </summary>
+        public void Proceed()
+        {
+            if(interceptors != null && interceptors.Count > 0)
+            {
+                var interceptor = interceptors.Dequeue();
+                interceptor.Intercept(this);
+            }
+            else
+            {
+                ReturnValue = Method.Invoke(Target, Args);
+            }
         }
     }
 }

@@ -21,30 +21,31 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddInterceptor(this IServiceCollection services, Type interceptorType, Type interfaceType)
         {
             var oriTypeDesc = services.FirstOrDefault(n => n.ServiceType.Equals(interfaceType));
-            Type impType = null;
-            Type oriType = null;
 
             if (oriTypeDesc == null)
             {
-                throw new ArgumentException("I must be implemented by a class");
+                throw new ArgumentException($"The interface {interfaceType.FullName} isn't registered.");
             }
 
-            if (currentImplementations.ContainsKey(interfaceType))
-            {
-                impType = currentImplementations[interfaceType].CurrentType;
-                oriType = currentImplementations[interfaceType].Originalype;
-            }
-            else if (oriTypeDesc.ImplementationType != null)
-            {
-                impType = oriTypeDesc.ImplementationType;
-                oriType = oriTypeDesc.ImplementationType;
-            }
+            var dynamicProxy = DynamicProxyContext.Instance.GetDynamicProxy(interfaceType);
 
-            if (impType != null)
+            if (dynamicProxy != null)
             {
-                var proxyType = InterceptorProxyFactory.CreateProxy(interceptorType, interfaceType, impType, oriType);
+                DynamicProxyContext.Instance.AddInterceptor(interfaceType, dynamicProxy.OriginalType, 
+                    dynamicProxy.ProxyType, interceptorType);
+
+                if (oriTypeDesc.ImplementationType != null)
+                {
+                    services = services.Decorate(interfaceType, dynamicProxy.ProxyType);
+                }
+            }
+            else
+            {
+                var proxyType = ProxyFactory.CreateProxy(interfaceType);
+                DynamicProxyContext.Instance.AddInterceptor(interfaceType, oriTypeDesc.ImplementationType,
+                    proxyType, interceptorType);
+
                 services = services.Decorate(interfaceType, proxyType);
-                currentImplementations[interfaceType] = new ImplementationProxyClass(proxyType, oriType);
             }
 
             return services;

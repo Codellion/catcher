@@ -9,16 +9,11 @@ namespace Catcher.Core.Example.Interceptor
 {
     public class AuditInterceptor : IInterceptor
     {
-        private DateTime startTime;
-
-        public void PreIntercept(CatcherContext context)
+        public void Intercept(CatcherContext context)
         {
-            startTime = DateTime.Now;
-        }
-
-        public void PostIntercept(CatcherContext context)
-        {
-            System.Console.WriteLine(DateTime.Now - startTime);
+            var startTime = DateTime.Now;
+            context.Proceed();
+            Console.WriteLine(DateTime.Now - startTime);
         }
     }
 }
