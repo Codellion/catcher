@@ -20,10 +20,32 @@ namespace Catcher.Core
         /// </summary>
         public MethodBase Method { get; internal set; }
 
+        private object returnValue;
+
         /// <summary>
         /// Value returned by the method call
         /// </summary>
-        public object ReturnValue { get; set; }
+        public object ReturnValue
+        {
+            get
+            {
+                if (returnValue == null && Method is MethodInfo)
+                {
+                    var methodInfo = (MethodInfo)Method;
+
+                    if (methodInfo.ReturnType.IsValueType)
+                    {
+                        return Activator.CreateInstance(methodInfo.ReturnType);
+                    }
+                }
+
+                return returnValue;
+            }
+            set
+            {
+                returnValue = value;
+            }
+        }
 
         /// <summary>
         /// Instance on which the call is executed.
